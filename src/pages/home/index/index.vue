@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <div class="header scroll">
+    <div :class="{ header: true, scroll: isScrollTop }">
       <div class="classify-icon"></div>
       <div class="search-wrap">
         <div class="search-icon"></div>
@@ -9,7 +9,20 @@
       <div class="login">登录</div>
     </div>
     <div class="banner-wrap">
-      <img src="//vueshop.glbuys.com/uploadfiles/1484285302.jpg" alt="" />
+      <div class="swiper-container" ref="swiper-container">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <img src="//vueshop.glbuys.com/uploadfiles/1484285302.jpg" alt="" />
+          </div>
+          <div class="swiper-slide">
+            <img src="//vueshop.glbuys.com/uploadfiles/1484285334.jpg" alt="" />
+          </div>
+          <div class="swiper-slide">
+            <img src="//vueshop.glbuys.com/uploadfiles/1524206455.jpg" alt="" />
+          </div>
+        </div>
+        <div class="swiper-pagination" ref="swiper-pagination"></div>
+      </div>
     </div>
     <div class="quick-nav">
       <ul class="item">
@@ -324,12 +337,60 @@
 </template>
 
 <script>
+import Swiper from "@/assets/js/libs/swiper";
 export default {
   name: "component-index",
+  data() {
+    return {
+      isScrollTop: false,
+    };
+  },
+  created() {
+    this.isScroll = true;
+    window.addEventListener("scroll", this.eventScrollTop);
+  },
+  mounted() {
+    new Swiper(this.$refs["swiper-container"], {
+      autoplay: 3000,
+      pagination: this.$refs["swiper-pagination"],
+      paginationClickable: true, // 点击分页器的指示点分页器会控制Swiper切换
+      autoplayDisableOnInteraction: false, // 用户操作swiper之后，是否禁止autoplay
+    });
+  },
+  methods: {
+    eventScrollTop() {
+      let scrollTop =
+        document.body.scrollTop || document.documentElement.scrollTop;
+      if (scrollTop >= 150) {
+        if (this.isScroll) {
+          this.isScroll = false;
+          this.isScrollTop = true;
+        }
+      } else {
+        if (!this.isScroll) {
+          this.isScroll = true;
+          this.isScrollTop = false;
+        }
+      }
+    },
+  },
+  destroyed() {
+    window.removeEventListener("scroll", this.eventScrollTop);
+  },
+  // keep-alive进入时触发
+  activated() {
+    this.isScroll = true;
+    window.addEventListener("scroll", this.eventScrollTop);
+  },
+  // keep-alive离开时触发
+  deactivated() {
+    window.removeEventListener("scroll", this.eventScrollTop);
+  },
 };
 </script>
 
 <style scoped>
+@import "@/assets/css/common/swiper.css";
 .page {
   width: 100%;
   min-height: 100%;
