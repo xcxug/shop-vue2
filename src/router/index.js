@@ -1,6 +1,5 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import HomeView from "../views/HomeView.vue";
 
 Vue.use(VueRouter);
 
@@ -8,22 +7,43 @@ const routes = [
   {
     path: "/",
     name: "home",
-    component: HomeView,
-  },
-  {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+    component: () => import("@/pages/home/main"), // 路由懒加载解决首屏加载慢，性能优化
+    meta: { keepAlive: false },
+    redirect: "/index",
+    children: [
+      {
+        path: "index",
+        name: "index",
+        component: () => import("@/pages/home/index"),
+        meta: { keepAlive: true, title: "商城" },
+      },
+      {
+        path: "cart",
+        name: "cart",
+        component: () => import("@/pages/home/cart"),
+        meta: { keepAlive: false, title: "购物车" },
+      },
+      {
+        path: "my",
+        name: "my",
+        component: () => import("@/pages/user/ucenter"),
+        meta: { keepAlive: false, title: "我的" },
+      },
+    ],
   },
 ];
 
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
+  // 解决白屏
+  scrollBehavior: (to, from, position) => {
+    if (position) {
+      return position;
+    } else {
+      return { x: 0, y: 0 };
+    }
+  },
   routes,
 });
 
