@@ -1,4 +1,4 @@
-# vueshop2.0
+# shop-vue2
 
 ## Project setup
 ```
