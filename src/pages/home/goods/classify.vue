@@ -7,41 +7,17 @@
     <div class="goods-main">
       <div ref="scroll-classify" class="classify-wrap">
         <div>
-          <div ref="item" class="classify-item active">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item active">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item active">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item active">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item active">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item active">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item active">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
-          <div ref="item" class="classify-item">潮流女装</div>
+          <div
+            ref="item"
+            :class="{ 'classify-item': true, active: item.active }"
+            v-for="(item, index) in classifys"
+            :key="index"
+            @click="
+              replacePage('/goods/classify/item?cid=' + item.cid + '', index)
+            "
+          >
+            {{ item.title }}
+          </div>
         </div>
       </div>
       <div class="goods-content">
@@ -52,16 +28,73 @@
 </template>
 
 <script>
+import { mapActions, mapState, mapMutations } from "vuex";
 import IScroll from "@/assets/js/libs/iscroll";
 export default {
   name: "component-classify",
   methods: {
+    ...mapActions({
+      getClassify: "goods/getClassify",
+    }),
+    ...mapMutations({
+      SELECT_ITEM: "goods/SELECT_ITEM",
+    }),
     goBack() {
       this.$router.go(-1);
     },
     scrollPreventDefault(e) {
       e.preventDefault();
     },
+    selectItem(index) {
+      // 点击中间部分区域有动画效果
+      let topHeight = this.$refs["item"][0].offsetHeight * index;
+      let halfHeight = parseInt(this.$refs["scroll-classify"].offsetHeight / 3);
+      let bottomHeight = parseInt(
+        this.$refs["scroll-classify"].scrollHeight - topHeight
+      );
+      if (
+        topHeight > halfHeight &&
+        bottomHeight > this.$refs["scroll-classify"].offsetHeight
+      ) {
+        // 滚动到相对于当前位置的某处
+        this.myScroll.scrollTo(0, -topHeight, 1000, IScroll.utils.ease.elastic);
+      }
+
+      this.SELECT_ITEM({ index: index });
+    },
+    replacePage(url, index) {
+      this.$router.replace(url);
+
+      this.selectItem(index);
+    },
+  },
+  computed: {
+    ...mapState({
+      classifys: (state) => state.goods.classifys,
+    }),
+  },
+  created() {
+    this.cid = this.$route.query.cid ? this.$route.query.cid : "";
+    this.getClassify({
+      success: () => {
+        this.$nextTick(() => {
+          // 刷新
+          this.myScroll.refresh();
+
+          if (this.classifys.length > 0 && this.cid) {
+            let i = 0;
+            for (; i < this.classifys.length; i++) {
+              if (this.classifys[i].cid === this.cid) {
+                break;
+              }
+            }
+            this.selectItem(i);
+          } else {
+            this.selectItem(0);
+          }
+        });
+      },
+    });
   },
   mounted() {
     document.title = this.$route.meta.title;
@@ -69,7 +102,7 @@ export default {
       "touchmove",
       this.scrollPreventDefault
     );
-    new IScroll(this.$refs["scroll-classify"], {
+    this.myScroll = new IScroll(this.$refs["scroll-classify"], {
       scrollX: false,
       scrollY: true,
       preventDefault: false,

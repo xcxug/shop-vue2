@@ -1,205 +1,81 @@
 <template>
   <div ref="goods-classify-content" class="goods-content-main">
-    <div>
-      <div class="goods-wrap">
-        <div class="classify-name">裙装</div>
+    <div v-show="goods.length > 0">
+      <div class="goods-wrap" v-for="(item, index) in goods" :key="index">
+        <div class="classify-name">{{ item.title }}</div>
         <div class="goods-items-wrap">
-          <ul>
+          <ul v-for="(item2, index2) in item.goods" :key="index2">
             <li>
               <img
-                src="//vueshop.glbuys.com/uploadfiles/1484284030.jpg"
+                src="../../../assets/images/common/lazyImg.jpg"
+                :data-echo="item2.image"
                 alt=""
               />
             </li>
-            <li>裙装66</li>
-          </ul>
-          <ul>
-            <li>
-              <img
-                src="//vueshop.glbuys.com/uploadfiles/1484284030.jpg"
-                alt=""
-              />
-            </li>
-            <li>裙装66</li>
-          </ul>
-          <ul>
-            <li>
-              <img
-                src="//vueshop.glbuys.com/uploadfiles/1484284030.jpg"
-                alt=""
-              />
-            </li>
-            <li>裙装66</li>
-          </ul>
-          <ul>
-            <li>
-              <img
-                src="//vueshop.glbuys.com/uploadfiles/1484284030.jpg"
-                alt=""
-              />
-            </li>
-            <li>裙装66</li>
-          </ul>
-          <ul>
-            <li>
-              <img
-                src="//vueshop.glbuys.com/uploadfiles/1484284030.jpg"
-                alt=""
-              />
-            </li>
-            <li>裙装66</li>
-          </ul>
-          <ul>
-            <li>
-              <img
-                src="//vueshop.glbuys.com/uploadfiles/1484284030.jpg"
-                alt=""
-              />
-            </li>
-            <li>裙装66</li>
-          </ul>
-        </div>
-      </div>
-      <div class="goods-wrap">
-        <div class="classify-name">裙装</div>
-        <div class="goods-items-wrap">
-          <ul>
-            <li>
-              <img
-                src="//vueshop.glbuys.com/uploadfiles/1484284030.jpg"
-                alt=""
-              />
-            </li>
-            <li>裙装66</li>
-          </ul>
-          <ul>
-            <li>
-              <img
-                src="//vueshop.glbuys.com/uploadfiles/1484284030.jpg"
-                alt=""
-              />
-            </li>
-            <li>裙装66</li>
-          </ul>
-          <ul>
-            <li>
-              <img
-                src="//vueshop.glbuys.com/uploadfiles/1484284030.jpg"
-                alt=""
-              />
-            </li>
-            <li>裙装66</li>
-          </ul>
-          <ul>
-            <li>
-              <img
-                src="//vueshop.glbuys.com/uploadfiles/1484284030.jpg"
-                alt=""
-              />
-            </li>
-            <li>裙装66</li>
-          </ul>
-          <ul>
-            <li>
-              <img
-                src="//vueshop.glbuys.com/uploadfiles/1484284030.jpg"
-                alt=""
-              />
-            </li>
-            <li>裙装66</li>
-          </ul>
-          <ul>
-            <li>
-              <img
-                src="//vueshop.glbuys.com/uploadfiles/1484284030.jpg"
-                alt=""
-              />
-            </li>
-            <li>裙装66</li>
-          </ul>
-        </div>
-      </div>
-      <div class="goods-wrap">
-        <div class="classify-name">裙装</div>
-        <div class="goods-items-wrap">
-          <ul>
-            <li>
-              <img
-                src="//vueshop.glbuys.com/uploadfiles/1484284030.jpg"
-                alt=""
-              />
-            </li>
-            <li>裙装66</li>
-          </ul>
-          <ul>
-            <li>
-              <img
-                src="//vueshop.glbuys.com/uploadfiles/1484284030.jpg"
-                alt=""
-              />
-            </li>
-            <li>裙装66</li>
-          </ul>
-          <ul>
-            <li>
-              <img
-                src="//vueshop.glbuys.com/uploadfiles/1484284030.jpg"
-                alt=""
-              />
-            </li>
-            <li>裙装66</li>
-          </ul>
-          <ul>
-            <li>
-              <img
-                src="//vueshop.glbuys.com/uploadfiles/1484284030.jpg"
-                alt=""
-              />
-            </li>
-            <li>裙装66</li>
-          </ul>
-          <ul>
-            <li>
-              <img
-                src="//vueshop.glbuys.com/uploadfiles/1484284030.jpg"
-                alt=""
-              />
-            </li>
-            <li>裙装66</li>
-          </ul>
-          <ul>
-            <li>
-              <img
-                src="//vueshop.glbuys.com/uploadfiles/1484284030.jpg"
-                alt=""
-              />
-            </li>
-            <li>裙装66</li>
+            <li>{{ item2.title }}</li>
           </ul>
         </div>
       </div>
     </div>
+    <div v-show="goods.length <= 0" class="no-data">没有相关商品！</div>
   </div>
 </template>
 
 <script>
+import { mapActions, mapState } from "vuex";
 import IScroll from "@/assets/js/libs/iscroll";
 export default {
   methods: {
+    ...mapActions({
+      getGoods: "goods/getGoods",
+    }),
     scrollPreventDefault(e) {
       e.preventDefault();
     },
+    init(cid) {
+      this.getGoods({
+        cid: cid,
+        success: () => {
+          this.$nextTick(() => {
+            // 刷新
+            this.myScroll.refresh();
+
+            this.$utils.lazyImg();
+          });
+        },
+      });
+    },
+  },
+  computed: {
+    ...mapState({
+      goods: (state) => state.goods.goods,
+    }),
+  },
+  created() {
+    this.cid = this.$route.query.cid ? this.$route.query.cid : "";
+    this.init(this.cid);
   },
   mounted() {
     this.$refs["goods-classify-content"].addEventListener(
       "touchmove",
       this.scrollPreventDefault
     );
-    new IScroll(this.$refs["goods-classify-content"], {
+    this.myScroll = new IScroll(this.$refs["goods-classify-content"], {
       scrollX: false,
       scrollY: true,
       preventDefault: false,
     });
+
+    // 滚动结束
+    this.myScroll.on("scrollEnd", () => {
+      this.$utils.lazyImg();
+    });
+  },
+  // 在当前路由改变，但是该组件被复用时调用
+  beforeRouteUpdate(to, from, next) {
+    // console.log(to.query.cid);
+    this.init(to.query.cid);
+    next();
   },
   beforeDestroy() {
     this.$refs["goods-classify-content"].removeEventListener(
