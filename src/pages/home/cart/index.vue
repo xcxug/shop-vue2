@@ -55,7 +55,10 @@
           >&nbsp;&nbsp;合计：<span>¥{{ total }}</span>
         </div>
       </div>
-      <div :class="total > 0 ? 'orderend-btn' : 'orderend-btn disable'">
+      <div
+        :class="total > 0 ? 'orderend-btn' : 'orderend-btn disable'"
+        @click="statement()"
+      >
         去结算
       </div>
     </div>
@@ -141,6 +144,12 @@ export default {
         this.isAllSelect = isChecked;
       } else {
         this.isAllSelect = false;
+      }
+    },
+    // 去结算
+    statement() {
+      if (this.total > 0) {
+        this.$router.push("/order");
       }
     },
   },

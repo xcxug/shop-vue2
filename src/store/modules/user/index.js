@@ -71,6 +71,7 @@ export default {
       safeOutLoginData({ uid: conText.state.uid }).then(() => {
         // console.log(res);
       });
+      conText.rootState.cart.cartData = [];
       conText.commit("OUT_LOGIN");
     },
     // 会员安全认证
@@ -81,7 +82,9 @@ export default {
         auth_token: conText.state.authToken,
       }).then((res) => {
         // console.log(res);
-        conText.commit("OUT_LOGIN");
+        if (res.code !== 200) {
+          conText.commit("OUT_LOGIN");
+        }
         if (payload.success) {
           payload.success(res);
         }

@@ -90,6 +90,27 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/order",
+    name: "order",
+    component: () => import("@/pages/home/order/index"),
+    meta: { auth: true, title: "确认订单" },
+  },
+  {
+    path: "/address",
+    name: "address",
+    component: () => import("@/pages/home/address/index"),
+  },
+  {
+    path: "/address/add",
+    name: "address-add",
+    component: () => import("@/pages/home/address/add"),
+  },
+  {
+    path: "/address/mod",
+    name: "address-mod",
+    component: () => import("@/pages/home/address/mod"),
+  },
 ];
 
 const router = new VueRouter({
