@@ -1,4 +1,4 @@
-import { getAddresData, delAddressData } from "@/api/address";
+import { getAddresData, delAddressData, addAddressData } from "@/api/address";
 
 export default {
   namespaced: true,
@@ -29,6 +29,16 @@ export default {
         (res) => {
           if (res.code === 200) {
             conText.commit("DEL_ADDRESS", { index: payload.index });
+          }
+        }
+      );
+    },
+    // 添加收货地址
+    addAddress(conText, payload) {
+      addAddressData({ uid: conText.rootState.user.uid, ...payload }).then(
+        (res) => {
+          if (payload.success) {
+            payload.success(res);
           }
         }
       );

@@ -21,4 +21,13 @@ function delAddressData(params) {
   );
 }
 
-export { getAddresData, delAddressData };
+// 添加收货地址
+function addAddressData(params) {
+  return request(
+    config.baseApi + "/user/address/add?token=" + config.token,
+    "post",
+    params
+  );
+}
+
+export { getAddresData, delAddressData, addAddressData };
