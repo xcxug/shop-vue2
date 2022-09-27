@@ -1,39 +1,71 @@
 <template>
   <div class="page">
     <div class="reviews-main">
-      <div class="reviews-title">商品评价（10）</div>
-      <div class="reviews-wrap">
-        <div class="reviews-list">
+      <div class="reviews-title">商品评价（{{ total }}）</div>
+      <div class="reviews-wrap" v-show="reviews.length > 0">
+        <div class="reviews-list" v-for="(item, index) in reviews" :key="index">
           <div class="uinfo">
             <div class="head">
-              <img src="//vueshop.glbuys.com/uploadfiles/1524556409.jpg" />
+              <img
+                src="../../../assets/images/common/lazyImg.jpg"
+                :data-echo="item.head"
+              />
             </div>
-            <div class="nickname">李四</div>
+            <div class="nickname">{{ item.nickname }}</div>
           </div>
-          <div class="reviews-content">
-            评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容
-          </div>
-          <div class="reviews-date">2019-07-25</div>
-        </div>
-        <div class="reviews-list">
-          <div class="uinfo">
-            <div class="head">
-              <img src="//vueshop.glbuys.com/uploadfiles/1524556409.jpg" />
-            </div>
-            <div class="nickname">李四</div>
-          </div>
-          <div class="reviews-content">
-            评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容评价内容
-          </div>
-          <div class="reviews-date">2019-07-25</div>
+          <div class="reviews-content" v-html="item.content"></div>
+          <div class="reviews-date">{{ item.times }}</div>
         </div>
       </div>
+      <div class="no-data" v-show="reviews.length <= 0">暂无评价！</div>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+import { mapState, mapActions } from "vuex";
+import UpRefresh from "@/assets/js/libs/uprefresh";
+export default {
+  data() {
+    return {
+      gid: this.$route.query.gid ? this.$route.query.gid : "",
+    };
+  },
+  created() {
+    this.pullUp = new UpRefresh();
+
+    this.getReviews({
+      gid: this.gid,
+      success: (pageNum) => {
+        this.$nextTick(() => {
+          this.$utils.lazyImg();
+        });
+
+        this.pullUp.init(
+          { curPage: 1, maxPage: parseInt(pageNum), offsetBottom: 100 },
+          (page) => {
+            this.getReviewsPage({ gid: this.gid, page: page });
+          }
+        );
+      },
+    });
+  },
+  computed: {
+    ...mapState({
+      reviews: (state) => state.goodsReview.reviews,
+      total: (state) => state.goodsReview.total,
+    }),
+  },
+  methods: {
+    ...mapActions({
+      getReviews: "goodsReview/getReviews",
+      getReviewsPage: "goodsReview/getReviewsPage",
+    }),
+  },
+  beforeDestroy() {
+    this.pullUp.uneventSrcoll();
+  },
+};
 </script>
 
 <style scoped>
