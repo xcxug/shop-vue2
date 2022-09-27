@@ -9,7 +9,12 @@
         </div>
       </div>
       <template v-if="address.length > 0">
-        <div class="address-list" v-for="(item, index) in address" :key="index">
+        <div
+          class="address-list"
+          v-for="(item, index) in address"
+          :key="index"
+          @click="selectAddress(item.aid)"
+        >
           <div class="address-info-wrap">
             <div
               class="check-mark"
@@ -80,6 +85,7 @@ export default {
       getAddress: "address/getAddress",
       asyncDelAddress: "address/delAddress",
     }),
+    // 删除收货地址
     delAddress(index, aid) {
       Dialog.confirm({
         title: "",
@@ -89,6 +95,11 @@ export default {
           this.asyncDelAddress({ index: index, aid: aid });
         })
         .catch(() => {});
+    },
+    // 选择收货地址
+    selectAddress(aid) {
+      sessionStorage["addsid"] = aid;
+      this.$router.go(-1);
     },
   },
 };

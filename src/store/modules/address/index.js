@@ -4,6 +4,7 @@ import {
   addAddressData,
   getAddressInfoData,
   modAddressData,
+  getDefaultAddressData,
 } from "@/api/address";
 
 export default {
@@ -70,6 +71,16 @@ export default {
           }
         }
       );
+    },
+    // 获取默认收货地址
+    getDefaultAddress(conText, payload) {
+      getDefaultAddressData(conText.rootState.user.uid).then((res) => {
+        if (res.code === 200) {
+          if (payload.success) {
+            payload.success(res);
+          }
+        }
+      });
     },
   },
 };

@@ -52,10 +52,22 @@ function modAddressData(params) {
   );
 }
 
+// 获取默认地址
+function getDefaultAddressData(uid) {
+  return request(
+    config.baseApi +
+      "/user/address/defaultAddress?uid=" +
+      uid +
+      "&token=" +
+      config.token
+  );
+}
+
 export {
   getAddresData,
   delAddressData,
   addAddressData,
   getAddressInfoData,
   modAddressData,
+  getDefaultAddressData,
 };

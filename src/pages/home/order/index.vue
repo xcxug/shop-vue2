@@ -3,16 +3,17 @@
     <SubHeader title="确认订单"></SubHeader>
     <div class="main">
       <div class="address-wrap" @click="$router.push('/address')">
-        <div class="persion-info">
-          <span>收货人：张三</span><span>13818273552</span>
+        <div class="persion-info" v-show="name ? true : false">
+          <span>收货人：{{ name }}</span
+          ><span>{{ cellphone }}</span>
         </div>
-        <div class="address">
+        <div class="address" v-show="name ? true : false">
           <img
             src="../../../assets/images/home/cart/map.png"
             alt="收货地址"
-          /><span>北京朝阳</span>
+          /><span>{{ showArea }}</span>
         </div>
-        <div v-show="false" class="address-null">
+        <div v-show="!name ? true : false" class="address-null">
           您的收货地址为空,点击添加收货地址
         </div>
         <div class="arrow"></div>
@@ -70,10 +71,18 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 import SubHeader from "@/components/sub_header";
 export default {
   name: "component-order",
+  data() {
+    return {
+      aid: sessionStorage["addsid"],
+      name: "",
+      cellphone: "",
+      showArea: "",
+    };
+  },
   components: {
     SubHeader,
   },
@@ -98,11 +107,44 @@ export default {
   },
   created() {
     this.$utils.safeUser(this);
+
+    if (this.aid) {
+      this.getAddressInfo({
+        aid: this.aid,
+        success: (res) => {
+          this.name = res.data.name;
+          this.cellphone = res.data.cellphone;
+          this.showArea =
+            res.data.province +
+            res.data.city +
+            res.data.area +
+            res.data.address;
+        },
+      });
+    } else {
+      this.getDefaultAddress({
+        success: (res) => {
+          sessionStorage["addsid"] = res.data.aid;
+          this.name = res.data.name;
+          this.cellphone = res.data.cellphone;
+          this.showArea =
+            res.data.province +
+            res.data.city +
+            res.data.area +
+            res.data.address;
+        },
+      });
+    }
   },
   mounted() {
     document.title = this.$route.meta.title;
   },
-  methods: {},
+  methods: {
+    ...mapActions({
+      getAddressInfo: "address/getAddressInfo",
+      getDefaultAddress: "address/getDefaultAddress",
+    }),
+  },
 };
 </script>
 
