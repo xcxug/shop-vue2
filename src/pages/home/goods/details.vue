@@ -1,15 +1,24 @@
 <template>
   <div>
     <div class="details-header">
-      <div class="back"></div>
+      <div class="back" @click="$router.go(-1)"></div>
       <div class="tab-wrap">
-        <div class="tab-name active" @click="goPage('/goods/details')">
+        <div
+          :class="{ 'tab-name': true, active: itemStyle }"
+          @click="$router.replace('/goods/details?gid=' + gid)"
+        >
           商品
         </div>
-        <div class="tab-name" @click="goPage('/goods/details/content')">
+        <div
+          :class="{ 'tab-name': true, active: contentStyle }"
+          @click="$router.replace('/goods/details/content?gid=' + gid)"
+        >
           详情
         </div>
-        <div class="tab-name" @click="goPage('/goods/details/review')">
+        <div
+          :class="{ 'tab-name': true, active: reviewStyle }"
+          @click="$router.replace('/goods/details/review?gid=' + gid)"
+        >
           评价
         </div>
       </div>
@@ -26,10 +35,49 @@
 <script>
 export default {
   name: "component-details",
+  data() {
+    return {
+      gid: this.$route.query.gid ? this.$route.query.gid : "",
+      itemStyle: true,
+      contentStyle: false,
+      reviewStyle: false,
+    };
+  },
+  created() {
+    this.changeTabStyle(this.$route.name);
+  },
   methods: {
     goPage(url) {
       this.$router.replace(url);
     },
+    changeTabStyle(name) {
+      switch (name) {
+        case "goods-item":
+          this.itemStyle = true;
+          this.contentStyle = false;
+          this.reviewStyle = false;
+          break;
+        case "goods-content":
+          this.itemStyle = false;
+          this.contentStyle = true;
+          this.reviewStyle = false;
+          break;
+        case "goods-review":
+          this.itemStyle = false;
+          this.contentStyle = false;
+          this.reviewStyle = true;
+          break;
+        default:
+          this.itemStyle = true;
+          this.contentStyle = false;
+          this.reviewStyle = false;
+          break;
+      }
+    },
+  },
+  beforeRouteUpdate(to, from, next) {
+    this.changeTabStyle(to.name);
+    next();
   },
 };
 </script>

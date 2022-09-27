@@ -50,6 +50,29 @@ const routes = [
     name: "goods-search",
     component: () => import("@/pages/home/goods/search"),
   },
+  {
+    path: "/goods/details",
+    name: "goods-details",
+    component: () => import("@/pages/home/goods/details"),
+    redirect: "/goods/details/item",
+    children: [
+      {
+        path: "item",
+        name: "goods-item",
+        component: () => import("@/pages/home/goods/details_item"),
+      },
+      {
+        path: "content",
+        name: "goods-content",
+        component: () => import("@/pages/home/goods/details_content"),
+      },
+      {
+        path: "review",
+        name: "goods-review",
+        component: () => import("@/pages/home/goods/details_review"),
+      },
+    ],
+  },
 ];
 
 const router = new VueRouter({

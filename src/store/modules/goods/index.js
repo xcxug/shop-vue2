@@ -6,6 +6,42 @@ export default {
   state: {
     classifys: [],
     goods: [],
+    attrs: [
+      {
+        title: "颜色",
+        values: [
+          {
+            value: "黑色",
+            active: false,
+          },
+          {
+            value: "红色",
+            active: false,
+          },
+          {
+            value: "白色",
+            active: false,
+          },
+        ],
+      },
+      {
+        title: "尺码",
+        values: [
+          {
+            value: "36",
+            active: false,
+          },
+          {
+            value: "37",
+            active: false,
+          },
+          {
+            value: "38",
+            active: false,
+          },
+        ],
+      },
+    ],
   },
   mutations: {
     ["SET_CLASSIFYS"](state, payload) {
@@ -26,6 +62,23 @@ export default {
     },
     ["SET_GOODS"](state, payload) {
       state.goods = payload.goods;
+    },
+    // 选择商品属性
+    ["SELECT_ATTR"](state, payload) {
+      if (state.attrs.length > 0) {
+        for (let i = 0; i < state.attrs[payload.index].values.length; i++) {
+          if (state.attrs[payload.index].values[i].active) {
+            state.attrs[payload.index].values[i].active = false;
+            break;
+          }
+        }
+        state.attrs[payload.index].values[payload.index2].active = true;
+        Vue.set(
+          state.attrs[payload.index].values[payload.index2],
+          payload.index2,
+          state.attrs[payload.index].values[payload.index2]
+        );
+      }
     },
   },
   actions: {
