@@ -6,7 +6,10 @@
         <div class="search-icon"></div>
         <div class="text">请输入宝贝名称</div>
       </div>
-      <div class="login">登录</div>
+      <div class="login" v-if="!isLogin" @click="$router.push('/login')">
+        登录
+      </div>
+      <div class="my-icon" v-else @click="$router.push('/my')"></div>
     </div>
     <div class="banner-wrap">
       <div class="swiper-container" ref="swiper-container">
@@ -241,6 +244,7 @@ export default {
       navs: (state) => state.index.navs,
       goods: (state) => state.index.goods,
       recomGoods: (state) => state.index.recomGoods,
+      isLogin: (state) => state.user.isLogin,
     }),
   },
   methods: {
@@ -350,6 +354,15 @@ export default {
   height: 0.44rem;
   font-size: 0.32rem;
   color: #ffffff;
+}
+
+.header .my-icon {
+  width: 0.6rem;
+  height: 0.6rem;
+  background-image: url("../../../assets/images/home/index/my.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .banner-wrap {

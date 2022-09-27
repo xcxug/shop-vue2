@@ -32,6 +32,12 @@ const routes = [
     ],
   },
   {
+    path: "/login",
+    name: "login",
+    component: () => import("@/pages/home/login"),
+    meta: { keepAlive: false },
+  },
+  {
     path: "/goods/classify",
     name: "goods-classify",
     component: () => import("@/pages/home/goods/classify"),
@@ -87,6 +93,18 @@ const router = new VueRouter({
     }
   },
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.auth) {
+    if (localStorage["isLogin"]) {
+      next();
+    } else {
+      next("/login");
+    }
+  } else {
+    next();
+  }
 });
 
 export default router;
