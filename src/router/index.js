@@ -45,6 +45,11 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/goods/search",
+    name: "goods-search",
+    component: () => import("@/pages/home/goods/search"),
+  },
 ];
 
 const router = new VueRouter({

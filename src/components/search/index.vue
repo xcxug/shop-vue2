@@ -24,6 +24,7 @@
           class="keywords"
           v-for="(item, index) in historyKeywords"
           :key="index"
+          @click="goSearch(item)"
         >
           {{ item }}
         </div>
@@ -64,6 +65,10 @@ export default {
         return {};
       },
     },
+    isLocal: {
+      type: Boolean,
+      default: false,
+    },
   },
   created() {
     // 最近搜索关键词
@@ -99,6 +104,15 @@ export default {
         }
         this.keywords.unshift(tmpKeyword);
         this.SET_KEYWORDS({ historyKeywords: this.keywords });
+      }
+
+      this.$emit("close", false);
+      if (this.isLocal) {
+        // 向history栈添加一个新的记录，点击后退会返回至上一个页面
+        this.$router.replace("/goods/search?keyword=" + tmpKeyword);
+      } else {
+        // 替换history栈中最后一个记录，点击后退会返回至上上一个页面
+        this.$router.push("/goods/search?keyword=" + tmpKeyword);
       }
     },
     clearHistoryKeywords() {
