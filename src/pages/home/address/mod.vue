@@ -1,47 +1,170 @@
 <template>
   <div class="page">
-    <div class="sub-header">
-      <div class="back"></div>
-      <div class="title">修改收货地址</div>
-      <div class="right-btn">保存</div>
-    </div>
+    <SubHeader title="修改收货地址"></SubHeader>
     <div class="main">
       <ul>
         <li>收货人</li>
-        <li><input type="text" placeholder="收货人姓名" /></li>
+        <li><input type="text" placeholder="收货人姓名" v-model="name" /></li>
       </ul>
       <ul>
         <li>联系方式</li>
-        <li><input type="text" placeholder="联系人手机号" /></li>
+        <li>
+          <input type="text" placeholder="联系人手机号" v-model="cellphone" />
+        </li>
       </ul>
       <ul>
         <li>所在地区</li>
         <li>
           <input
             type="text"
-            placeholder="请选择收货地址"
+            placeholder="请选择所在地区"
             class="area"
             readOnly
-            value=""
+            :value="showArea"
+            @click="isArea = true"
           />
         </li>
       </ul>
       <ul>
         <li>详细地址</li>
-        <li><input type="text" placeholder="街道详细地址" /></li>
+        <li>
+          <input type="text" placeholder="街道详细地址" v-model="address" />
+        </li>
       </ul>
       <ul>
         <li>设置为默认地址</li>
-        <li><input type="checkbox" checked /></li>
+        <li><input type="checkbox" v-model="isDefault" /></li>
       </ul>
-      <button type="button" class="submit-save">保存</button>
+      <button type="button" class="submit-save" @click="submit()">修改</button>
     </div>
+    <van-popup v-model="isArea">
+      <van-area
+        :area-list="areaList"
+        @cancel="isArea = false"
+        @confirm="selectArea"
+      />
+    </van-popup>
   </div>
 </template>
 
 <script>
+import Vue from "vue";
+import { mapActions } from "vuex";
+import { Toast, Area, Popup } from "vant";
+import areaData from "@/assets/data/area";
+import SubHeader from "@/components/sub_header";
+Vue.use(Area);
+Vue.use(Popup);
 export default {
   name: "address-mod",
+  data() {
+    return {
+      name: "",
+      cellphone: "",
+      showArea: "",
+      address: "",
+      isDefault: false,
+      areaList: areaData,
+      isArea: false,
+      province: "",
+      city: "",
+      area: "",
+    };
+  },
+  created() {
+    this.isSubmit = true;
+    this.aid = this.$route.query.aid ? this.$route.query.aid : "";
+    this.getAddressInfo({
+      aid: this.aid,
+      success: (res) => {
+        this.name = res.data.name;
+        this.cellphone = res.data.cellphone;
+        this.showArea =
+          res.data.province + " " + res.data.city + " " + res.data.area;
+        this.isDefault = res.data.isdefault === "1" ? true : false;
+        this.address = res.data.address;
+        this.province = res.data.province;
+        this.city = res.data.city;
+        this.area = res.data.area;
+      },
+    });
+  },
+  mounted() {
+    document.title = this.$route.meta.title;
+  },
+  components: {
+    SubHeader,
+  },
+  methods: {
+    ...mapActions({
+      modAddress: "address/modAddress",
+      getAddressInfo: "address/getAddressInfo",
+    }),
+    submit() {
+      if (this.name.match(/^\s*$/)) {
+        Toast("请输入收货人姓名");
+        return;
+      }
+
+      if (this.cellphone.match(/^\s*$/)) {
+        Toast("请输入联系人手机号");
+        return;
+      }
+      if (!this.cellphone.match(/^1[0-9][0-9]\d{8}$/)) {
+        Toast("您输入的手机号格式不正确");
+        return;
+      }
+
+      if (this.showArea.match(/^\s*$/)) {
+        Toast("请选择所在地区");
+        return;
+      }
+
+      if (this.address.match(/^\s*$/)) {
+        Toast("请输入详细地址");
+        return;
+      }
+
+      if (this.isSubmit) {
+        this.isSubmit = false;
+        this.modAddress({
+          aid: this.aid,
+          name: this.name,
+          cellphone: this.cellphone,
+          province: this.province,
+          area: this.area,
+          city: this.city,
+          address: this.address,
+          isdefault: this.isDefault ? "1" : "0",
+          success: (res) => {
+            if (res.code === 200) {
+              Toast({
+                duration: 2000,
+                message: "修改成功！",
+                onClose: () => {
+                  this.$router.go(-1);
+                },
+              });
+            }
+          },
+        });
+      }
+    },
+    // 选择所在地区
+    selectArea(val) {
+      this.isArea = false;
+      let tmpVal = [];
+      if (val.length > 0) {
+        for (let i = 0; i < val.length; i++) {
+          tmpVal.push(val[i].name);
+        }
+        this.province = tmpVal[0];
+        this.city = tmpVal[1];
+        this.area = tmpVal[2];
+      }
+      this.showArea = tmpVal.join(" ");
+    },
+  },
 };
 </script>
 

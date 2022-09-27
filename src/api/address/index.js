@@ -30,4 +30,32 @@ function addAddressData(params) {
   );
 }
 
-export { getAddresData, delAddressData, addAddressData };
+// 收货地址详情
+function getAddressInfoData(params) {
+  return request(
+    config.baseApi +
+      "/user/address/info?uid=" +
+      params.uid +
+      "&aid=" +
+      params.aid +
+      "&token=" +
+      config.token
+  );
+}
+
+// 修改收货地址
+function modAddressData(params) {
+  return request(
+    config.baseApi + "/user/address/mod?token=" + config.token,
+    "post",
+    params
+  );
+}
+
+export {
+  getAddresData,
+  delAddressData,
+  addAddressData,
+  getAddressInfoData,
+  modAddressData,
+};
