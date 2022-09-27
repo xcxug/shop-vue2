@@ -1,4 +1,12 @@
-import { loginData, safeUserData, safeOutLoginData } from "@/api/user";
+import {
+  loginData,
+  safeUserData,
+  safeOutLoginData,
+  checkVCodeData,
+  isRegData,
+  regUserData,
+  getUserInfoData,
+} from "@/api/user";
 
 export default {
   namespaced: true,
@@ -7,6 +15,8 @@ export default {
     nickname: localStorage["nickname"] ? localStorage["nickname"] : "",
     isLogin: localStorage["isLogin"] ? Boolean(localStorage["isLogin"]) : false,
     authToken: localStorage["authToken"] ? localStorage["authToken"] : "",
+    head: "",
+    points: 0,
   },
   mutations: {
     ["SET_LOGIN"](state, payload) {
@@ -24,10 +34,18 @@ export default {
       state.nickname = "";
       state.isLogin = false;
       state.authToken = "";
+      state.head = "";
+      state.points = 0;
       localStorage.removeItem("uid");
       localStorage.removeItem("nickname");
       localStorage.removeItem("isLogin");
       localStorage.removeItem("authToken");
+      localStorage.removeItem("cartData");
+    },
+    ["SET_USER_INFO"](state, payload) {
+      state.nickname = payload.nickname;
+      state.head = payload.head;
+      state.points = payload.points;
     },
   },
   actions: {
@@ -50,8 +68,8 @@ export default {
     },
     // 安全退出
     outLogin(conText) {
-      safeOutLoginData({ uid: conText.state.uid }).then((res) => {
-        console.log(res);
+      safeOutLoginData({ uid: conText.state.uid }).then(() => {
+        // console.log(res);
       });
       conText.commit("OUT_LOGIN");
     },
@@ -66,6 +84,38 @@ export default {
         conText.commit("OUT_LOGIN");
         if (payload.success) {
           payload.success(res);
+        }
+      });
+    },
+    // 检测图片验证码
+    checkVCode(conText, payload) {
+      return checkVCodeData(payload.vcode).then((res) => {
+        return res;
+      });
+    },
+    // 是否注册会员
+    isReg(conText, payload) {
+      return isRegData(payload.username).then((res) => {
+        return res;
+      });
+    },
+    // 注册会员
+    regUser(conText, payload) {
+      regUserData(payload).then((res) => {
+        if (payload.success) {
+          payload.success(res);
+        }
+      });
+    },
+    // 获取会员信息
+    getUserInfo(conText) {
+      getUserInfoData(conText.state.uid).then((res) => {
+        if (res.code === 200) {
+          conText.commit("SET_USER_INFO", {
+            nickname: res.data.nickname,
+            head: res.data.head,
+            points: res.data.points,
+          });
         }
       });
     },

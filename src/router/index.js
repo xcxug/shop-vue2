@@ -38,6 +38,17 @@ const routes = [
     meta: { keepAlive: false },
   },
   {
+    path: "/reg",
+    name: "reg",
+    component: () => import("@/pages/home/reg"),
+    meta: { keepAlive: false },
+  },
+  {
+    path: "/ucenter",
+    name: "ucenter",
+    component: () => import("@/pages/user/ucenter"),
+  },
+  {
     path: "/goods/classify",
     name: "goods-classify",
     component: () => import("@/pages/home/goods/classify"),

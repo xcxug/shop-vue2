@@ -78,7 +78,11 @@ export default {
         password: this.password, // 123456
         success: (res) => {
           if (res.code === 200) {
-            this.$router.go(-1);
+            if (this.$route.query.from === "reg") {
+              this.$router.go(-3);
+            } else {
+              this.$router.go(-1);
+            }
           } else {
             Toast(res.data);
           }

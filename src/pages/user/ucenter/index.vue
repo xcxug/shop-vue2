@@ -1,16 +1,19 @@
 <template>
   <div>
-    <div class="sub-header">
-      <div class="back"></div>
-      <div class="title">个人中心</div>
-      <div class="right-btn hide">保存</div>
-    </div>
+    <SubHeader title="个人中心" :isBack="false"></SubHeader>
     <div class="user-info-wrap">
       <div class="head">
-        <img src="../../../assets/images/user/my/default-head.png" alt="" />
+        <img
+          :src="
+            head
+              ? head
+              : require('../../../assets/images/user/my/default-head.png')
+          "
+          alt=""
+        />
       </div>
-      <div class="nickname">昵称</div>
-      <div class="points">我的积分：10</div>
+      <div class="nickname">{{ nickname ? nickname : "昵称" }}</div>
+      <div class="points">我的积分：{{ points }}</div>
     </div>
     <div class="order-name-wrap">
       <div class="order-name">全部订单</div>
@@ -51,63 +54,63 @@
         <li>我的收藏</li>
         <li></li>
       </ul>
-      <div class="btn" @click="goPage('/login')">登录/注册</div>
+      <div class="btn" @click="isLogin ? outLogin() : goPage('/login')">
+        {{ isLogin ? "安全退出" : "登录/注册" }}
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import Vue from "vue";
+import { mapState, mapActions } from "vuex";
+import SubHeader from "@/components/sub_header";
+import { Dialog } from "vant";
+Vue.use(Dialog);
 export default {
   name: "component-ucenter",
   mounted() {
     document.title = this.$route.meta.title;
   },
+  created() {
+    this.getUserInfo();
+  },
   methods: {
+    ...mapActions({
+      asyncOutLogin: "user/outLogin",
+      getUserInfo: "user/getUserInfo",
+    }),
     goPage(url) {
       this.$router.push(url);
     },
+    outLogin() {
+      Dialog.confirm({
+        title: "",
+        message: "确认要退出吗？",
+      })
+        .then(() => {
+          this.asyncOutLogin();
+        })
+        .catch(() => {
+          // on cancel
+        });
+    },
+  },
+  computed: {
+    ...mapState({
+      isLogin: (state) => state.user.isLogin,
+      nickname: (state) => state.user.nickname,
+      head: (state) => state.user.head,
+      points: (state) => state.user.points,
+    }),
+  },
+  components: {
+    SubHeader,
   },
 };
 </script>
 
 <style scoped>
-.sub-header {
-  width: 100%;
-  height: 1rem;
-  background-color: #ffffff;
-  display: flex;
-  display: -webkit-flex;
-  align-items: center;
-  -webkit-align-items: center;
-  border-bottom: 1px solid #efefef;
-  position: fixed;
-  z-index: 10;
-  left: 0;
-  top: 0;
-}
-
-.sub-header .back {
-  width: 0.8rem;
-  height: 0.8rem;
-  background-image: url("../../../assets/images/home/goods/back.png");
-  background-size: 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-}
-
-.sub-header .title {
-  width: 79%;
-  height: auto;
-  font-size: 0.32rem;
-  text-align: center;
-}
-
-.sub-header .right-btn {
-  width: auto;
-  height: auto;
-  font-size: 0.32rem;
-}
-
 .user-info-wrap {
   width: 100%;
   height: 2.8rem;
