@@ -1,47 +1,18 @@
 import Vue from "vue";
-import { getClassifyData, getGoodsData } from "@/api/goods";
+import {
+  getClassifyData,
+  getGoodsData,
+  getDetailsData,
+  getSpecData,
+} from "@/api/goods";
 
 export default {
   namespaced: true,
   state: {
     classifys: [],
     goods: [],
-    attrs: [
-      {
-        title: "颜色",
-        values: [
-          {
-            value: "黑色",
-            active: false,
-          },
-          {
-            value: "红色",
-            active: false,
-          },
-          {
-            value: "白色",
-            active: false,
-          },
-        ],
-      },
-      {
-        title: "尺码",
-        values: [
-          {
-            value: "36",
-            active: false,
-          },
-          {
-            value: "37",
-            active: false,
-          },
-          {
-            value: "38",
-            active: false,
-          },
-        ],
-      },
-    ],
+    attrs: [],
+    details: {},
   },
   mutations: {
     ["SET_CLASSIFYS"](state, payload) {
@@ -80,6 +51,14 @@ export default {
         );
       }
     },
+    // 设置商品详情
+    ["SET_DETAILS"](state, payload) {
+      state.details = payload.details;
+    },
+    // 设置商品规格
+    ["SET_ATTRS"](state, payload) {
+      state.attrs = payload.attrs;
+    },
   },
   actions: {
     // 左侧分类
@@ -106,6 +85,30 @@ export default {
           }
         } else {
           conText.commit("SET_GOODS", { goods: [] });
+        }
+      });
+    },
+    // 商品详情
+    getDetails(conText, payload) {
+      getDetailsData(payload.gid).then((res) => {
+        if (res.code === 200) {
+          conText.commit("SET_DETAILS", { details: res.data });
+          if (payload.success) {
+            payload.success();
+          }
+        }
+      });
+    },
+    // 获取商品规格
+    getSpec(conText, payload) {
+      getSpecData(payload.gid).then((res) => {
+        if (res.code === 200) {
+          for (let i = 0; i < res.data.length; i++) {
+            for (let j = 0; j < res.data[i].values.length; j++) {
+              res.data[i].values[j].active = false;
+            }
+          }
+          conText.commit("SET_ATTRS", { attrs: res.data });
         }
       });
     },
