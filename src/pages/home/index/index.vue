@@ -2,7 +2,7 @@
   <div class="page">
     <div :class="{ header: true, scroll: isScrollTop }">
       <div class="classify-icon" @click="$router.push('/goods/classify')"></div>
-      <div class="search-wrap">
+      <div class="search-wrap" @click="searchShow.show = true">
         <div class="search-icon"></div>
         <div class="text">请输入宝贝名称</div>
       </div>
@@ -153,18 +153,24 @@
         <div class="goods-price">¥{{ item.price }}</div>
       </div>
     </div>
+    <my-search :show="searchShow" @close="handleClose"></my-search>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
 import Swiper from "@/assets/js/libs/swiper";
+import MySearch from "@/components/search";
 export default {
   name: "component-index",
   data() {
     return {
       isScrollTop: false,
+      searchShow: { show: false },
     };
+  },
+  components: {
+    MySearch,
   },
   created() {
     this.isScroll = true;
@@ -237,6 +243,9 @@ export default {
           this.isScrollTop = false;
         }
       }
+    },
+    handleClose(show) {
+      this.searchShow.show = show;
     },
   },
   destroyed() {
