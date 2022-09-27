@@ -36,47 +36,23 @@
       </div>
     </div>
     <div class="goods-main">
-      <div class="goods-list">
+      <div class="goods-list" v-for="(item, index) in searchData" :key="index">
         <div class="image">
-          <img src="//vueshop.glbuys.com/uploadfiles/1524554409.jpg" />
+          <img
+            src="../../../assets/images/common/lazyImg.jpg"
+            :data-echo="item.image"
+          />
         </div>
         <div class="goods-content">
-          <div class="goods-title">品牌男装</div>
-          <div class="price">¥100</div>
-          <div class="sales">销量<span>10</span>件</div>
+          <div class="goods-title">{{ item.title }}</div>
+          <div class="price">¥{{ item.price }}</div>
+          <div class="sales">
+            销量<span>{{ item.sales }}</span
+            >件
+          </div>
         </div>
       </div>
-      <div class="goods-list">
-        <div class="image">
-          <img src="//vueshop.glbuys.com/uploadfiles/1524554409.jpg" />
-        </div>
-        <div class="goods-content">
-          <div class="goods-title">品牌男装</div>
-          <div class="price">¥100</div>
-          <div class="sales">销量<span>10</span>件</div>
-        </div>
-      </div>
-      <div class="goods-list">
-        <div class="image">
-          <img src="//vueshop.glbuys.com/uploadfiles/1524554409.jpg" />
-        </div>
-        <div class="goods-content">
-          <div class="goods-title">品牌男装</div>
-          <div class="price">¥100</div>
-          <div class="sales">销量<span>10</span>件</div>
-        </div>
-      </div>
-      <div class="goods-list">
-        <div class="image">
-          <img src="//vueshop.glbuys.com/uploadfiles/1524554409.jpg" />
-        </div>
-        <div class="goods-content">
-          <div class="goods-title">品牌男装</div>
-          <div class="price">¥100</div>
-          <div class="sales">销量<span>10</span>件</div>
-        </div>
-      </div>
-      <div class="no-data">没有相关商品！</div>
+      <div class="no-data" v-show="searchData.length <= 0">没有相关商品！</div>
     </div>
     <div
       ref="mask"
@@ -163,9 +139,12 @@
         <div style="width: 100%; height: 1.2rem"></div>
       </div>
       <div class="handel-wrap">
-        <div class="item">共<span>10</span>件</div>
-        <div class="item reset">全部重置</div>
-        <div class="item sure">确定</div>
+        <div class="item">
+          共<span>{{ total }}</span
+          >件
+        </div>
+        <div class="item reset" @click="resetScreen()">全部重置</div>
+        <div class="item sure" @click="sureSubmit()">确定</div>
       </div>
     </div>
     <my-search
@@ -180,6 +159,7 @@
 import { mapState, mapActions, mapMutations } from "vuex";
 import MySearch from "@/components/search";
 import IScroll from "@/assets/js/libs/iscroll";
+import UpRefresh from "@/assets/js/libs/uprefresh";
 export default {
   name: "goods-search",
   data() {
@@ -207,10 +187,29 @@ export default {
       minPrice: (state) => state.search.minPrice,
       maxPrice: (state) => state.search.maxPrice,
       attrs: (state) => state.search.attrs,
+      searchData: (state) => state.search.searchData,
+      cid: (state) => state.search.cid,
+      params: (state) => state.search.params,
+      total: (state) => state.search.total,
     }),
   },
   created() {
+    this.otype = "all";
+    this.pullUp = new UpRefresh();
+
     this.getClassify({
+      success: () => {
+        this.$nextTick(() => {
+          this.myScroll.refresh();
+        });
+      },
+    });
+
+    this.resetScreen();
+    this.init();
+
+    this.getAttrs({
+      keyword: this.keyword,
       success: () => {
         this.$nextTick(() => {
           this.myScroll.refresh();
@@ -233,6 +232,10 @@ export default {
     ...mapActions({
       getClassify: "goods/getClassify",
       selectClassify: "search/selectClassify",
+      getSearch: "search/getSearch",
+      getSearchPage: "search/getSearchPage",
+      getAttrs: "search/getAttrs",
+      resetScreen: "search/resetScreen",
     }),
     ...mapMutations({
       HIDE_PRICE: "search/HIDE_PRICE",
@@ -241,6 +244,7 @@ export default {
       SET_MAXPRICE: "search/SET_MAXPRICE",
       HIDE_ATTR: "search/HIDE_ATTR",
       SELECT_ATTR: "search/SELECT_ATTR",
+      SET_PARAMS: "search/SET_PARAMS",
     }),
     selectPrice() {
       this.isPriceOrder = !this.isPriceOrder;
@@ -257,6 +261,8 @@ export default {
         this.priceOrderList[index].active = true;
         this.$set(this.priceOrderList, index, this.priceOrderList[index]);
         this.isSalesOrder = false;
+        this.otype = this.priceOrderList[index].otype;
+        this.init();
       }
     },
     // 销量排序
@@ -269,6 +275,8 @@ export default {
           break;
         }
       }
+      this.otype = "sales";
+      this.init();
     },
     // 禁用touchmove事件
     disableScreenTochmove(e) {
@@ -277,9 +285,65 @@ export default {
     handleClose(show) {
       this.searchShow.show = show;
     },
+    init() {
+      let jsonParams = {
+        keyword: this.keyword,
+        otype: this.otype,
+        cid: this.cid,
+        price1: this.minPrice,
+        price2: this.maxPrice,
+        param: JSON.stringify(this.params),
+      };
+      this.getSearch({
+        ...jsonParams,
+        success: (pageNum) => {
+          this.$nextTick(() => {
+            this.$utils.lazyImg();
+          });
+
+          this.pullUp.init(
+            { curPage: 1, maxPage: parseInt(pageNum), offsetBottom: 100 },
+            (page) => {
+              this.getSearchPage({ ...jsonParams, page: page });
+            }
+          );
+        },
+      });
+    },
+    // 确认搜索
+    sureSubmit() {
+      this.isScreen = false;
+      this.SET_PARAMS();
+      this.init();
+    },
   },
   beforeRouteUpdate(to, from, next) {
     this.keyword = to.query.keyword;
+
+    this.isPriceOrder = false;
+    if (this.priceOrderList.length > 0) {
+      for (let i = 0; i < this.priceOrderList.length; i++) {
+        if (this.priceOrderList[i].active) {
+          this.priceOrderList[i].active = false;
+          break;
+        }
+      }
+    }
+    this.priceOrderList[0].active = true;
+    this.otype = "all";
+    this.isSalesOrder = false;
+    this.resetScreen();
+    this.init();
+
+    this.getAttrs({
+      keyword: this.keyword,
+      success: () => {
+        this.$nextTick(() => {
+          this.myScroll.refresh();
+        });
+      },
+    });
+
     next();
   },
   beforeDestroy() {
@@ -287,6 +351,8 @@ export default {
       "touchmove",
       this.disableScreenTochmove
     );
+
+    this.pullUp.uneventSrcoll();
   },
 };
 </script>
@@ -473,7 +539,7 @@ export default {
 
 .goods-main .goods-list .goods-title {
   width: 95%;
-  height: 0.6rem;
+  height: 0.8rem;
   font-size: 0.28rem;
   overflow: hidden;
 }
