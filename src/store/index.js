@@ -7,6 +7,7 @@ import goodsReview from "./modules/goods/review";
 import cart from "./modules/cart";
 import user from "./modules/user";
 import address from "./modules/address";
+import order from "./modules/order";
 
 Vue.use(Vuex);
 
@@ -19,5 +20,6 @@ export default new Vuex.Store({
     cart,
     user,
     address,
+    order,
   },
 });

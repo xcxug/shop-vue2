@@ -41,6 +41,7 @@ export default {
       localStorage.removeItem("isLogin");
       localStorage.removeItem("authToken");
       localStorage.removeItem("cartData");
+      sessionStorage.removeItem("addsid");
     },
     ["SET_USER_INFO"](state, payload) {
       state.nickname = payload.nickname;

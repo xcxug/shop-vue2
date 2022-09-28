@@ -97,6 +97,12 @@ const routes = [
     meta: { auth: true, title: "确认订单" },
   },
   {
+    path: "/order/end",
+    name: "order-end",
+    component: () => import("@/pages/home/order/end"),
+    meta: { auth: true, title: "下单成功" },
+  },
+  {
     path: "/address",
     name: "address",
     component: () => import("@/pages/home/address/index"),

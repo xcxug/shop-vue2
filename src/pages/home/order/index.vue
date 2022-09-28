@@ -65,7 +65,7 @@
       <div class="price-wrap">
         <span>实际金额：</span><span>￥{{ total + freight }}</span>
       </div>
-      <div class="balance-btn">提交订单</div>
+      <div class="balance-btn" @click="submitOrder()">提交订单</div>
     </div>
   </div>
 </template>
@@ -107,7 +107,7 @@ export default {
   },
   created() {
     this.$utils.safeUser(this);
-
+    this.isSubmit = true;
     if (this.aid) {
       this.getAddressInfo({
         aid: this.aid,
@@ -143,7 +143,26 @@ export default {
     ...mapActions({
       getAddressInfo: "address/getAddressInfo",
       getDefaultAddress: "address/getDefaultAddress",
+      addOrder: "order/addOrder",
     }),
+    // 提交订单
+    submitOrder() {
+      if (this.total > 0) {
+        if (this.isSubmit) {
+          this.isSubmit = false;
+          this.addOrder({
+            freight: this.freight,
+            goodsData: JSON.stringify(this.cartData),
+            addsid: sessionStorage["addsid"],
+            success: (res) => {
+              if (res.code === 200) {
+                this.$router.push("/order/end");
+              }
+            },
+          });
+        }
+      }
+    },
   },
 };
 </script>
