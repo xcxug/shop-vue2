@@ -101,7 +101,7 @@ export default {
         this.asyncSureOrder({
           orderNum: item.ordernum,
           index: index,
-          status: 2,
+          status: "2",
         });
       }
     },
