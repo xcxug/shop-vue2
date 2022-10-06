@@ -17,4 +17,51 @@ function getOrderNumData(uid) {
   );
 }
 
-export { addOrderData, getOrderNumData };
+// 我的订单
+function getMyOrderData(data) {
+  return request(
+    config.baseApi +
+      "/user/myorder/index?uid=" +
+      data.uid +
+      "&status=" +
+      data.status +
+      "&token=" +
+      config.token +
+      "&page=" +
+      data.page
+  );
+}
+
+// 取消订单
+function cancelOrderData(data) {
+  return request(
+    config.baseApi +
+      "/user/myorder/clearorder?uid=" +
+      data.uid +
+      "&ordernum=" +
+      data.orderNum +
+      "&token=" +
+      config.token
+  );
+}
+
+// 确认订单
+function sureOrderData(data) {
+  return request(
+    config.baseApi +
+      "/user/myorder/finalorder?uid=" +
+      data.uid +
+      "&ordernum=" +
+      data.orderNum +
+      "&token=" +
+      config.token
+  );
+}
+
+export {
+  addOrderData,
+  getOrderNumData,
+  getMyOrderData,
+  cancelOrderData,
+  sureOrderData,
+};
