@@ -4,6 +4,7 @@ import {
   getMyOrderData,
   cancelOrderData,
   sureOrderData,
+  getOrderInfoData,
 } from "@/api/order";
 
 export default {
@@ -11,6 +12,7 @@ export default {
   state: {
     orderNum: "",
     orders: [],
+    orderInfo: {},
   },
   mutations: {
     ["SET_ORDERNUM"](state, payload) {
@@ -31,6 +33,10 @@ export default {
     // 改变订单状态
     ["SET_STATUS"](state, payload) {
       state.orders[payload.index].status = payload.status;
+    },
+    // 设置订单详情
+    ["SET_ORDER_INFO"](state, payload) {
+      state.orderInfo = payload.orderInfo;
     },
   },
   actions: {
@@ -99,6 +105,32 @@ export default {
             conText.commit("SET_STATUS", {
               index: payload.index,
               status: payload.status,
+            });
+          }
+        }
+      );
+    },
+    // 订单详情
+    getOrderInfo(conText, payload) {
+      getOrderInfoData({ uid: conText.rootState.user.uid, ...payload }).then(
+        (res) => {
+          if (res.code === 200) {
+            conText.commit("SET_ORDER_INFO", {
+              orderInfo: {
+                ordernum: res.data.ordernum,
+                name: res.data.name,
+                cellphone: res.data.cellphone,
+                status: res.data.status,
+                province: res.data.province,
+                city: res.data.city,
+                area: res.data.area,
+                address: res.data.address,
+                freight: res.data.freight,
+                total: res.data.total,
+                truetotal: res.data.truetotal,
+                ordertime: res.data.ordertime,
+                goods: res.data.goods,
+              },
             });
           }
         }

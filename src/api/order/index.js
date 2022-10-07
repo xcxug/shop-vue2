@@ -58,10 +58,24 @@ function sureOrderData(data) {
   );
 }
 
+// 获取订单详情
+function getOrderInfoData(data) {
+  return request(
+    config.baseApi +
+      "/user/myorder/desc?uid=" +
+      data.uid +
+      "&ordernum=" +
+      data.ordernum +
+      "&token=" +
+      config.token
+  );
+}
+
 export {
   addOrderData,
   getOrderNumData,
   getMyOrderData,
   cancelOrderData,
   sureOrderData,
+  getOrderInfoData,
 };
