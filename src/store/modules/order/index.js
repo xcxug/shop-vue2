@@ -64,7 +64,7 @@ export default {
         (res) => {
           let pageNum = 0;
           if (res.code === 200) {
-            pageNum = res.pageinfo.pagenum;
+            pageNum = Number(res.pageinfo.pagenum);
             conText.commit("SET_ORDERS", { orders: res.data });
           } else {
             pageNum = 0;
