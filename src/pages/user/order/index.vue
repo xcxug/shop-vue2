@@ -49,6 +49,9 @@ export default {
       }
     },
   },
+  created() {
+    this.$utils.safeUser(this);
+  },
   mounted() {
     this.getTitle();
   },
