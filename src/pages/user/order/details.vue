@@ -128,7 +128,7 @@ export default {
   },
   created() {
     this.$utils.safeUser(this);
-    this.getOrderInfo({ ordernum: this.ordernum });
+    this.getOrderInfo({ orderNum: this.ordernum });
   },
   mounted() {
     document.title = this.$route.meta.title;

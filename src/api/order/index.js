@@ -65,7 +65,7 @@ function getOrderInfoData(data) {
       "/user/myorder/desc?uid=" +
       data.uid +
       "&ordernum=" +
-      data.ordernum +
+      data.orderNum +
       "&token=" +
       config.token
   );
