@@ -71,6 +71,19 @@ function getOrderInfoData(data) {
   );
 }
 
+// 待评价订单
+function getReviewOrderData(data) {
+  return request(
+    config.baseApi +
+      "/user/myorder/reviewOrder?uid=" +
+      data.uid +
+      "&page=" +
+      data.page +
+      "&token=" +
+      config.token
+  );
+}
+
 export {
   addOrderData,
   getOrderNumData,
@@ -78,4 +91,5 @@ export {
   cancelOrderData,
   sureOrderData,
   getOrderInfoData,
+  getReviewOrderData,
 };
