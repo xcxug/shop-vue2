@@ -202,7 +202,7 @@ export default {
       getSearchData(payload).then((res) => {
         let pageNum = 0;
         if (res.code === 200) {
-          pageNum = res.pageinfo.pagenum;
+          pageNum = parseInt(res.pageinfo.pagenum);
           conText.commit("SET_SEARCH_DATA", {
             searchData: res.data,
             total: res.pageinfo.total,

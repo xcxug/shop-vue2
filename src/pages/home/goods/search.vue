@@ -307,7 +307,7 @@ export default {
           });
 
           this.pullUp.init(
-            { curPage: 1, maxPage: parseInt(pageNum), offsetBottom: 100 },
+            { curPage: 1, maxPage: pageNum, offsetBottom: 100 },
             (page) => {
               this.getSearchPage({ ...jsonParams, page: page });
             }

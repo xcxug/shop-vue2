@@ -24,7 +24,7 @@ export default {
             reviews: res.data,
             total: res.pageinfo.total,
           });
-          pageNum = res.pageinfo.pagenum;
+          pageNum = parseInt(res.pageinfo.pagenum);
         } else {
           conText.commit("SET_REVIEWS", { reviews: [], total: 0 });
           pageNum = 0;
