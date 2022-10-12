@@ -1,73 +1,119 @@
 <template>
   <div class="page">
-    <div class="sub-header">
-      <div class="back"></div>
-      <div class="title">评价</div>
-      <div class="right-btn hide">保存</div>
-    </div>
+    <SubHeader title="评价"></SubHeader>
     <div class="main">
-      <ul class="service">
-        <li>服务</li>
+      <ul class="service" v-for="(item, index) in reviewServices" :key="index">
+        <li>{{ item.title }}</li>
         <li>
-          <div class="stars"></div>
-          <div class="stars"></div>
-          <div class="stars"></div>
-          <div class="stars"></div>
-          <div class="stars"></div>
+          <div
+            :class="{ stars: true, active: item2.active }"
+            v-for="(item2, index2) in item.scores"
+            :key="index2"
+            @click="
+              SET_REVIEW_SCORE({
+                index: index,
+                index2: index2,
+                score: item2.value,
+              })
+            "
+          ></div>
         </li>
       </ul>
       <div class="content-wrap">
-        <textarea placeholder="来分享你的消费感受吧!"></textarea>
+        <textarea
+          placeholder="来分享你的消费感受吧!"
+          v-model="content"
+        ></textarea>
       </div>
-      <button class="submit" type="button">提交</button>
+      <button class="submit" type="button" @click="submit()">提交</button>
     </div>
   </div>
 </template>
 
 <script>
+import Vue from "vue";
+import { mapActions, mapState, mapMutations } from "vuex";
+import { Toast } from "vant";
+import SubHeader from "@/components/sub_header";
+Vue.use(Toast);
 export default {
   name: "add-review",
+  data() {
+    return {
+      content: "",
+    };
+  },
+  components: {
+    SubHeader,
+  },
+  created() {
+    this.$utils.safeUser(this);
+
+    this.gid = this.$route.query.gid ? this.$route.query.gid : "";
+    this.ordernum = this.$route.query.ordernum
+      ? this.$route.query.ordernum
+      : "";
+
+    this.isSubmit = true;
+    this.getReviewService();
+  },
+  mounted() {
+    document.title = this.$route.meta.title;
+  },
+  computed: {
+    ...mapState({
+      reviewServices: (state) => state.order.reviewServices,
+      uid: (state) => state.user.uid,
+    }),
+  },
+  methods: {
+    ...mapActions({
+      getReviewService: "order/getReviewService",
+      addReview: "order/addReview",
+    }),
+    ...mapMutations({
+      SET_REVIEW_SCORE: "order/SET_REVIEW_SCORE",
+    }),
+    submit() {
+      if (this.content.match(/^\s*$/)) {
+        Toast("请输入评价内容");
+        return;
+      }
+
+      if (this.isSubmit) {
+        this.isSubmit = false;
+        let rsdata = [];
+        if (this.reviewServices.length > 0) {
+          for (let i = 0; i < this.reviewServices.length; i++) {
+            rsdata.push({
+              gid: this.gid,
+              myid: this.uid,
+              rsid: this.reviewServices[i].rsid,
+              score: this.reviewServices[i].score,
+            });
+          }
+        }
+
+        this.addReview({
+          gid: this.gid,
+          content: this.content,
+          ordernum: this.ordernum,
+          rsdata: JSON.stringify(rsdata),
+          success: (res) => {
+            if (res.code === 200) {
+              this.$router.go(-1);
+            } else {
+              Toast(res.data);
+            }
+          },
+        });
+      }
+    },
+  },
 };
 </script>
 
 <style scoped>
-.sub-header {
-  width: 100%;
-  height: 1rem;
-  background-color: #ffffff;
-  display: flex;
-  display: -webkit-flex;
-  align-items: center;
-  -webkit-align-items: center;
-  border-bottom: 1px solid #efefef;
-  position: fixed;
-  z-index: 10;
-  left: 0;
-  top: 0;
-}
-
-.sub-header .back {
-  width: 0.8rem;
-  height: 0.8rem;
-  background-image: url("../../../assets/images/home/goods/back.png");
-  background-size: 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-}
-
-.sub-header .title {
-  width: 79%;
-  height: auto;
-  font-size: 0.32rem;
-  text-align: center;
-}
-
-.sub-header .right-btn {
-  width: auto;
-  height: auto;
-  font-size: 0.32rem;
-}
-
 .page {
   width: 100%;
   min-height: 100vh;

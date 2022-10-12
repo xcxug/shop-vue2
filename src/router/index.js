@@ -151,6 +151,7 @@ const routes = [
     path: "/user/order/add_review",
     name: "order-add-review",
     component: () => import("@/pages/user/order/add_review"),
+    meta: { auth: true, title: "评价" },
   },
 ];
 
