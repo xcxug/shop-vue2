@@ -6,6 +6,8 @@ import {
   isRegData,
   regUserData,
   getUserInfoData,
+  uploadHeadData,
+  updateUserInfoData,
 } from "@/api/user";
 
 export default {
@@ -112,7 +114,7 @@ export default {
       });
     },
     // 获取会员信息
-    getUserInfo(conText) {
+    getUserInfo(conText, payload) {
       getUserInfoData(conText.state.uid).then((res) => {
         if (res.code === 200) {
           conText.commit("SET_USER_INFO", {
@@ -120,6 +122,26 @@ export default {
             head: res.data.head,
             points: res.data.points,
           });
+
+          if (payload && payload.success) {
+            payload.success(res.data);
+          }
+        }
+      });
+    },
+    // 上传头像
+    uploadHead(conText, payload) {
+      uploadHeadData(payload).then((res) => {
+        if (payload.success) {
+          payload.success(res);
+        }
+      });
+    },
+    // 修改会员信息
+    updateUserInfo(conText, payload) {
+      updateUserInfoData({ uid: conText.state.uid, ...payload }).then((res) => {
+        if (payload.success) {
+          payload.success(res);
         }
       });
     },

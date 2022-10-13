@@ -66,6 +66,24 @@ function getUserInfoData(uid) {
   );
 }
 
+// 上传头像
+function uploadHeadData(data) {
+  return request(
+    config.baseApi + "/user/myinfo/formdatahead?token=" + config.token,
+    "file",
+    data
+  );
+}
+
+// 修改会员信息
+function updateUserInfoData(data) {
+  return request(
+    config.baseApi + "/user/myinfo/updateuser?token=" + config.token,
+    "post",
+    data
+  );
+}
+
 export {
   loginData,
   safeUserData,
@@ -74,4 +92,6 @@ export {
   isRegData,
   regUserData,
   getUserInfoData,
+  uploadHeadData,
+  updateUserInfoData,
 };
