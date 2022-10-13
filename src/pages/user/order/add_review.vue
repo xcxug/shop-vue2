@@ -31,11 +31,9 @@
 </template>
 
 <script>
-import Vue from "vue";
 import { mapActions, mapState, mapMutations } from "vuex";
 import { Toast } from "vant";
 import SubHeader from "@/components/sub_header";
-Vue.use(Toast);
 export default {
   name: "add-review",
   data() {

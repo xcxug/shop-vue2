@@ -49,7 +49,6 @@ import Vue from "vue";
 import { mapActions } from "vuex";
 import { Toast, Switch } from "vant";
 import SubHeader from "@/components/sub_header";
-Vue.use(Toast);
 Vue.use(Switch);
 export default {
   name: "component-reg",

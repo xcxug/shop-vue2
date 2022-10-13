@@ -41,7 +41,6 @@ import { mapActions } from "vuex";
 import { Switch, Toast } from "vant";
 import SubHeader from "@/components/sub_header";
 Vue.use(Switch);
-Vue.use(Toast);
 export default {
   name: "component-login",
   data() {

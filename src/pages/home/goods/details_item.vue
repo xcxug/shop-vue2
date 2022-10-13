@@ -111,12 +111,10 @@
 </template>
 
 <script>
-import Vue from "vue";
 import { mapState, mapMutations, mapActions } from "vuex";
 import Swiper from "@/assets/js/libs/swiper";
 import TweenMax from "@/assets/js/libs/TweenMax";
 import { Toast } from "vant";
-Vue.use(Toast);
 export default {
   data() {
     return {
