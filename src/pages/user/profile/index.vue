@@ -10,7 +10,7 @@
         <li>头像</li>
         <li>
           <img :src="showHead" alt="" />
-          <input ref="headfile" type="file" @change="uploadHead()" />
+          <input ref="headfile" type="file" @change="uploadHead" />
         </li>
       </ul>
       <ul class="list">
