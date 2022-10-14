@@ -2,7 +2,7 @@
   <div class="sub-header">
     <div class="back" @click="$router.go(-1)" v-show="isBack"></div>
     <div class="title">{{ title }}</div>
-    <div class="right-btn" v-if="rightText ? true : false" @click="submit">
+    <div class="right-btn" v-if="rightText ? true : false" @click="submit()">
       {{ rightText }}
     </div>
   </div>
