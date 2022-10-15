@@ -135,7 +135,7 @@ export default {
       if (this.isSubmit) {
         this.isSubmit = false;
         this.updateCellphone({
-          cellphone: this.cellphone,
+          cellphone: this.cellphone, // 13717628483,13917628483
           vcode: this.msgCode,
           success: (res) => {
             if (res.code === 200) {
