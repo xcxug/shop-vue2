@@ -64,11 +64,9 @@
 </template>
 
 <script>
-import Vue from "vue";
 import { mapState, mapActions } from "vuex";
 import SubHeader from "@/components/sub_header";
 import { Dialog } from "vant";
-Vue.use(Dialog);
 export default {
   name: "component-ucenter",
   mounted() {
