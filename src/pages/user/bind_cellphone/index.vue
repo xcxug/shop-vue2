@@ -10,7 +10,7 @@
         <input
           type="tel"
           class="cellphone"
-          @input="checkCellphone"
+          @input="checkCellphone()"
           placeholder="绑定手机号"
           v-model="cellphone"
         />
@@ -24,20 +24,20 @@
         />
         <div
           :class="{ 'code-btn': true, success: isSendMsgCode }"
-          @click="getMsgCode"
+          @click="getMsgCode()"
         >
           {{ msgCodeText }}
         </div>
       </div>
-      <div class="save-btn" @click="submit">下一步</div>
+      <div class="save-btn" @click="submit()">下一步</div>
     </div>
   </div>
 </template>
 
 <script>
-import { Toast } from "vant";
 import { mapActions } from "vuex";
-import SubHeader from "../../../components/sub_header";
+import { Toast } from "vant";
+import SubHeader from "@/components/sub_header";
 export default {
   name: "bind-cellphone",
   data() {
@@ -51,20 +51,21 @@ export default {
   components: {
     SubHeader,
   },
-  mounted() {
-    document.title = this.$route.meta.title;
-  },
   created() {
     this.$utils.safeUser(this);
+
     this.timer = null;
     this.isSubmit = true;
+  },
+  mounted() {
+    document.title = this.$route.meta.title;
   },
   methods: {
     ...mapActions({
       isReg: "user/isReg",
       updateCellphone: "user/updateCellphone",
     }),
-    //获取短信验证码
+    // 获取短信验证码
     async getMsgCode() {
       if (this.isSendMsgCode) {
         if (this.cellphone.match(/^\s*$/)) {
@@ -80,6 +81,7 @@ export default {
           Toast("此手机号已注册过，请更换手机号");
           return;
         }
+
         this.isSendMsgCode = false;
         let time = 10;
         this.msgCodeText = "重新获取(" + time + ")";
@@ -109,7 +111,7 @@ export default {
         this.isSendMsgCode = false;
       }
     },
-    //修改手机号
+    // 修改手机号
     async submit() {
       if (this.cellphone.match(/^\s*$/)) {
         Toast("请输入手机号");
@@ -124,10 +126,12 @@ export default {
         Toast("此手机号已注册过，请更换手机号");
         return;
       }
+
       if (this.msgCode.match(/^\s*$/)) {
         Toast("请输入短信验证码");
         return;
       }
+
       if (this.isSubmit) {
         this.isSubmit = false;
         this.updateCellphone({
