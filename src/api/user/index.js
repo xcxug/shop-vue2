@@ -93,6 +93,15 @@ function updateCellphoneData(data) {
   );
 }
 
+// 修改密码
+function updatePasswordData(data) {
+  return request(
+    config.baseApi + "/user/myinfo/modpwd?token=" + config.token,
+    "post",
+    data
+  );
+}
+
 export {
   loginData,
   safeUserData,
@@ -104,4 +113,5 @@ export {
   uploadHeadData,
   updateUserInfoData,
   updateCellphoneData,
+  updatePasswordData,
 };
