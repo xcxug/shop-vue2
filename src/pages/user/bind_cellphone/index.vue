@@ -258,7 +258,7 @@ export default {
 }
 
 .main .input-wrap .code-btn {
-  width: 27%;
+  width: 25%;
   height: 100%;
   border-left: #efefef 1px solid;
   float: left;
