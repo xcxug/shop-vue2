@@ -37,6 +37,10 @@ export default {
           if (res.code === 200) {
             conText.commit("DEL_ADDRESS", { index: payload.index });
           }
+
+          if (payload.success) {
+            payload.success();
+          }
         }
       );
     },
