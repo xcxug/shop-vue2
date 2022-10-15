@@ -84,6 +84,15 @@ function updateUserInfoData(data) {
   );
 }
 
+// 修改手机号
+function updateCellphoneData(data) {
+  return request(
+    config.baseApi + "/user/myinfo/updatecellphone?token=" + config.token,
+    "post",
+    data
+  );
+}
+
 export {
   loginData,
   safeUserData,
@@ -94,4 +103,5 @@ export {
   getUserInfoData,
   uploadHeadData,
   updateUserInfoData,
+  updateCellphoneData,
 };

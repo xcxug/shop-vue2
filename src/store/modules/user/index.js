@@ -8,6 +8,7 @@ import {
   getUserInfoData,
   uploadHeadData,
   updateUserInfoData,
+  updateCellphoneData,
 } from "@/api/user";
 
 export default {
@@ -144,6 +145,16 @@ export default {
           payload.success(res);
         }
       });
+    },
+    // 修改手机号
+    updateCellphone(conText, payload) {
+      updateCellphoneData({ uid: conText.state.uid, ...payload }).then(
+        (res) => {
+          if (payload.success) {
+            payload.success(res);
+          }
+        }
+      );
     },
   },
 };

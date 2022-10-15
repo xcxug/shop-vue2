@@ -177,6 +177,12 @@ const routes = [
     component: () => import("@/pages/user/address/mod"),
     meta: { auth: true, title: "修改收货地址" },
   },
+  {
+    path: "/user/bind_cellphone",
+    name: "bind-cellphone",
+    component: () => import("@/pages/user/bind_cellphone"),
+    meta: { auth: true, title: "绑定手机号" },
+  },
 ];
 
 const router = new VueRouter({
