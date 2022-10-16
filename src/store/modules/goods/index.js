@@ -4,6 +4,7 @@ import {
   getGoodsData,
   getDetailsData,
   getSpecData,
+  addFavData,
 } from "@/api/goods";
 
 export default {
@@ -111,6 +112,16 @@ export default {
           conText.commit("SET_ATTRS", { attrs: res.data });
         }
       });
+    },
+    // 加入收藏
+    addFav(conText, payload) {
+      addFavData({ uid: conText.rootState.user.uid, ...payload }).then(
+        (res) => {
+          if (payload.success) {
+            payload.success(res);
+          }
+        }
+      );
     },
   },
 };

@@ -189,6 +189,12 @@ const routes = [
     component: () => import("@/pages/user/mod_password"),
     meta: { auth: true, title: "修改密码" },
   },
+  {
+    path: "/user/fav",
+    name: "fav",
+    component: () => import("@/pages/user/fav"),
+    meta: { auth: true, title: "我的收藏" },
+  },
 ];
 
 const router = new VueRouter({

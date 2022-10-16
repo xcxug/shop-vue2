@@ -53,7 +53,7 @@
       <div class="no-data" v-show="reviews.length <= 0">暂无评价！</div>
     </div>
     <div class="bottom-btn-wrap">
-      <div class="btn fav">收藏</div>
+      <div class="btn fav" @click="addFav()">收藏</div>
       <div class="btn cart" @click="showPanel()">加入购物车</div>
     </div>
     <div class="mask" v-show="isPanel" @click="hidePanel()"></div>
@@ -157,6 +157,7 @@ export default {
       details: (state) => state.goods.details,
       total: (state) => state.goodsReview.total,
       reviews: (state) => state.goodsReview.reviews,
+      isLogin: (state) => state.user.isLogin,
     }),
   },
   mounted() {},
@@ -169,6 +170,7 @@ export default {
       getDetails: "goods/getDetails",
       getSpec: "goods/getSpec",
       getReviews: "goodsReview/getReviews",
+      joinFav: "goods/addFav",
     }),
     // 显示属性面板
     showPanel() {
@@ -270,6 +272,19 @@ export default {
           },
         });
         TweenMax.to(cloneImg, 0.2, { rotation: 360, repeat: -1 });
+      }
+    },
+    // 我的收藏
+    addFav() {
+      if (this.isLogin) {
+        this.joinFav({
+          gid: this.gid,
+          success: (res) => {
+            Toast(res.data);
+          },
+        });
+      } else {
+        Toast("请登录会员");
       }
     },
   },

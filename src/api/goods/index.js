@@ -35,4 +35,23 @@ function getSpecData(gid = "") {
   );
 }
 
-export { getClassifyData, getGoodsData, getDetailsData, getSpecData };
+// 加入收藏
+function addFavData(data) {
+  return request(
+    config.baseApi +
+      "/goods/fav?uid=" +
+      data.uid +
+      "&gid=" +
+      data.gid +
+      "&token=" +
+      config.token
+  );
+}
+
+export {
+  getClassifyData,
+  getGoodsData,
+  getDetailsData,
+  getSpecData,
+  addFavData,
+};

@@ -102,6 +102,32 @@ function updatePasswordData(data) {
   );
 }
 
+// 我的收藏
+function getFavData(data) {
+  return request(
+    config.baseApi +
+      "/user/fav/index?uid=" +
+      data.uid +
+      "&token=" +
+      config.token +
+      "&page=" +
+      data.page
+  );
+}
+
+// 删除收藏
+function delFavData(data) {
+  return request(
+    config.baseApi +
+      "/user/fav/del?uid=" +
+      data.uid +
+      "&fid=" +
+      data.fid +
+      "&token=" +
+      config.token
+  );
+}
+
 export {
   loginData,
   safeUserData,
@@ -114,4 +140,6 @@ export {
   updateUserInfoData,
   updateCellphoneData,
   updatePasswordData,
+  getFavData,
+  delFavData,
 };

@@ -10,6 +10,8 @@ import {
   updateUserInfoData,
   updateCellphoneData,
   updatePasswordData,
+  getFavData,
+  delFavData,
 } from "@/api/user";
 
 export default {
@@ -21,6 +23,7 @@ export default {
     authToken: localStorage["authToken"] ? localStorage["authToken"] : "",
     head: "",
     points: 0,
+    favs: [],
   },
   mutations: {
     ["SET_LOGIN"](state, payload) {
@@ -51,6 +54,17 @@ export default {
       state.nickname = payload.nickname;
       state.head = payload.head;
       state.points = payload.points;
+    },
+    // 设置我的收藏
+    ["SET_FAVS"](state, payload) {
+      state.favs = payload.favs;
+    },
+    ["SET_FAVS_PAGE"](state, payload) {
+      state.favs.push(...payload.favs);
+    },
+    // 删除收藏
+    ["DEL_FAVS"](state, payload) {
+      state.favs.splice(payload.index, 1);
     },
   },
   actions: {
@@ -162,6 +176,43 @@ export default {
       updatePasswordData({ uid: conText.state.uid, ...payload }).then((res) => {
         if (payload.success) {
           payload.success(res);
+        }
+      });
+    },
+    // 我的收藏
+    getFav(conText, payload) {
+      getFavData({ uid: conText.state.uid, ...payload }).then((res) => {
+        let pageNum = 0;
+        if (res.code === 200) {
+          conText.commit("SET_FAVS", { favs: res.data });
+          pageNum = res.pageinfo.pagenum;
+        } else {
+          conText.commit("SET_FAVS", { favs: [] });
+          pageNum = 0;
+        }
+        if (payload.success) {
+          payload.success(pageNum);
+        }
+      });
+    },
+    getFavPage(conText, payload) {
+      getFavData({ uid: conText.state.uid, ...payload }).then((res) => {
+        if (res.code === 200) {
+          conText.commit("SET_FAVS_PAGE", { favs: res.data });
+          if (payload.success) {
+            payload.success();
+          }
+        }
+      });
+    },
+    // 删除收藏
+    delFav(conText, payload) {
+      delFavData({ uid: conText.state.uid, ...payload }).then((res) => {
+        if (res.code === 200) {
+          conText.commit("DEL_FAVS", { index: payload.index });
+          if (payload.success) {
+            payload.success();
+          }
         }
       });
     },
