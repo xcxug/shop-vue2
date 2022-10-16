@@ -185,7 +185,7 @@ export default {
         let pageNum = 0;
         if (res.code === 200) {
           conText.commit("SET_FAVS", { favs: res.data });
-          pageNum = res.pageinfo.pagenum;
+          pageNum = parseInt(res.pageinfo.pagenum);
         } else {
           conText.commit("SET_FAVS", { favs: [] });
           pageNum = 0;
