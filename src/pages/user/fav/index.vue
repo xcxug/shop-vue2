@@ -46,18 +46,19 @@ export default {
       success: (pageNum) => {
         this.$nextTick(() => {
           this.$utils.lazyImg();
-          this.pullUp.init(
-            { curPage: 1, maxPage: pageNum, offsetBottom: 100 },
-            (page) => {
-              this.getFavPage({
-                page: page,
-                success: () => {
-                  this.$utils.lazyImg();
-                },
-              });
-            }
-          );
         });
+
+        this.pullUp.init(
+          { curPage: 1, maxPage: pageNum, offsetBottom: 100 },
+          (page) => {
+            this.getFavPage({
+              page: page,
+              success: () => {
+                this.$utils.lazyImg();
+              },
+            });
+          }
+        );
       },
     });
   },
