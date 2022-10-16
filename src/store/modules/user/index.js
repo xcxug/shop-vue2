@@ -210,9 +210,6 @@ export default {
       delFavData({ uid: conText.state.uid, ...payload }).then((res) => {
         if (res.code === 200) {
           conText.commit("DEL_FAVS", { index: payload.index });
-          if (payload.success) {
-            payload.success();
-          }
         }
       });
     },

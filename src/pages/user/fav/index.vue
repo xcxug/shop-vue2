@@ -86,11 +86,6 @@ export default {
           this.asyncDelFav({
             index: index,
             fid: fid,
-            success: () => {
-              this.$nextTick(() => {
-                this.$utils.lazyImg();
-              });
-            },
           });
         })
         .catch(() => {});
