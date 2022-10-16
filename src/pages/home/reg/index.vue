@@ -135,7 +135,7 @@ export default {
         },
       });
     },
-    //获取短信验证码
+    // 获取短信验证码
     async getMsgCode() {
       if (this.isSendMsgCode) {
         if (this.vcode.match(/^\s*$/)) {

@@ -83,7 +83,13 @@ export default {
           this.pullUp.init(
             { curPage: 1, maxPage: pageNum, offsetBottom: 100 },
             (page) => {
-              this.getMyOrderPage({ status: this.status, page: page });
+              this.getMyOrderPage({
+                status: this.status,
+                page: page,
+                success: () => {
+                  this.$utils.lazyImg();
+                },
+              });
             }
           );
         },

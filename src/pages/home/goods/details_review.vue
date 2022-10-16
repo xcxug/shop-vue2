@@ -44,7 +44,13 @@ export default {
         this.pullUp.init(
           { curPage: 1, maxPage: pageNum, offsetBottom: 100 },
           (page) => {
-            this.getReviewsPage({ gid: this.gid, page: page });
+            this.getReviewsPage({
+              gid: this.gid,
+              page: page,
+              success: () => {
+                this.$utils.lazyImg();
+              },
+            });
           }
         );
       },

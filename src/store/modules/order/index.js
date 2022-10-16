@@ -117,6 +117,9 @@ export default {
         (res) => {
           if (res.code === 200) {
             conText.commit("SET_ORDERS_PAGE", { orders: res.data });
+            if (payload.success) {
+              payload.success();
+            }
           }
         }
       );
@@ -196,6 +199,9 @@ export default {
             conText.commit("SET_REVIEW_ORDERS_PAGE", {
               reviewOrders: res.data,
             });
+            if (payload.success) {
+              payload.success();
+            }
           }
         }
       );

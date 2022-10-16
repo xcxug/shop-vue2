@@ -309,7 +309,13 @@ export default {
           this.pullUp.init(
             { curPage: 1, maxPage: pageNum, offsetBottom: 100 },
             (page) => {
-              this.getSearchPage({ ...jsonParams, page: page });
+              this.getSearchPage({
+                ...jsonParams,
+                page: page,
+                success: () => {
+                  this.$utils.lazyImg();
+                },
+              });
             }
           );
         },

@@ -220,6 +220,9 @@ export default {
       getSearchData(payload).then((res) => {
         if (res.code === 200) {
           conText.commit("SET_SEARCH_DATA_PAGE", { searchData: res.data });
+          if (payload.success) {
+            payload.success();
+          }
         }
       });
     },
