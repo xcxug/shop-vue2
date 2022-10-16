@@ -188,6 +188,8 @@ export default {
       this.amount = this.amount.replace(/[^\d]/g, "");
       if (!this.amount || this.amount === "0") {
         this.amount = 1;
+      } else {
+        this.amount = Number(this.amount);
       }
     },
     // 确认提交
