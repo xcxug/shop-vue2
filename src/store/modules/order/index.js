@@ -138,7 +138,7 @@ export default {
     sureOrder(conText, payload) {
       sureOrderData({ uid: conText.rootState.user.uid, ...payload }).then(
         (res) => {
-          console.log(res);
+          // console.log(res);
           if (res.code === 200) {
             conText.commit("SET_STATUS", {
               index: payload.index,
